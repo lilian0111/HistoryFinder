@@ -12,11 +12,9 @@
                 font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
                 font-size: 100%;
             }
-            #status {
+            #status, #ajax {
                 /* avoid an excessively wide status text */
                 white-space: pre;
-                /*text-overflow: ellipsis;*/
-                /*overflow: hidden;*/
                 max-width: 420px;
             }
         </style>
@@ -30,15 +28,18 @@
         <script src="popup.js"></script>
     </head>
     <body>
-        <div id="status">History Finder - Search what you want inyour history</div>
+        <div id="status">History Finder - Search what you want in your history</div>
+        <div id="indexArea">
+            <input type="button" value="index" id="indexButton"/>
+            <input type="test" id="userid" size="10" placeholder="your userid"/>
+        </div>
         <p>
             <input type="text" id="searchText" size="40" placeholder="Search keyword in history record" />
             <img id="searchImage" src="icon.png">
+            <img id="refreshImage" src="refresh.png">
         </p>
-        <ul id="sqliteResult"></ul>
+        <div id="ajaxResult"></div>
         <div id="showResult"></div>
-
-        <!-- <img id="image-result" hidden> -->
     </body>
 </html>
 
