@@ -3,12 +3,26 @@
 
   "name": "History Finder",
   "description": "This extension will find your history record",
-  "version": "0.1",
+  "version": "0.2",
+
+  "commands" : {
+    "reload_extension" : {
+      "suggested_key" : {
+        "default" : "Ctrl+Shift+Q",
+        "windows" : "Ctrl+Shift+Q",
+        "mac" : "MacCtrl+Shift+Q",
+        "chromeos" : "Ctrl+Shift+Q",
+        "linux" : "Ctrl+Shift+Q"
+      },
+      "description" : "shortcut for reloading extensions"
+    }
+  },
 
   "browser_action": {
     "default_icon": "icon.png",
     "default_popup": "popup.html"
   },
+
   "permissions": [
     "history",
     "http://cml18.csie.ntu.edu.tw/"

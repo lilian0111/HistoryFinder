@@ -15,9 +15,9 @@ $sql = "select url, title from historyFinder ";
 $sql .= " where userid = " . $adodb->Quote($userid);
 $sql .= " and (title like " . $adodb->Quote('%' . $searchText . '%');
 $sql .= " or text like " . $adodb->Quote('%' . $searchText . '%');
-$sql .= " ) order by visitCount desc";
+$sql .= " ) order by visitCount desc, lastVisitTime desc";
 
-// $html .= $sql . '<br>';
+$html .= $sql . '<br>';
 $rs = $adodb->Execute($sql);
 if ($rs && !$rs->EOF) {
     $html .= '<ul>';

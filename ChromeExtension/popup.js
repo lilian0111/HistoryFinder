@@ -212,6 +212,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             var id = historyItems[i].id;
                             var url = historyItems[i].url;
                             var title = historyItems[i].title;
+                            var lastVisitTime = historyItems[i].lastVisitTime;
                             var visitCount = historyItems[i].visitCount;
                             if (i != 0) {
                                 jsonHistoryItems += ',';
@@ -219,6 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             jsonHistoryItems += '{"id":"' + id + '",';
                             jsonHistoryItems += '"url":"' + url + '",';
                             jsonHistoryItems += '"title":"' + title.replaceAll("\'", "").replaceAll("\"", "").replaceAll("\\", "") + '",';
+                            jsonHistoryItems += '"lastVisitTime":"' + lastVisitTime + '",';
                             jsonHistoryItems += '"visitCount":"' + visitCount + '"}';
                         }
                         jsonHistoryItems += ']';

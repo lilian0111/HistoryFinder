@@ -28,12 +28,28 @@ foreach ($historyItems as $key => $value) {
         $ins_data["url"] = $adodb->Quote($value['url']);
         $ins_data["title"] = $adodb->Quote($value['title']);
         $ins_data["text"] = $adodb->Quote($contextArray[$key]);
+        $ins_data["lastVisitTime"] = $adodb->Quote($value['lastVisitTime']);
         $ins_data["visitCount"] = $adodb->Quote($value['visitCount']);
 
         $sql  = " Insert Into historyFinder ( ";
         $sql .= implode(", ", array_keys($ins_data));
         $sql .= ") Values ( ";
         $sql .= implode(", ", array_values($ins_data))." )";
+        $rs = $adodb->Execute($sql);
+    } else {
+        $up_data = array();
+
+        $up_data["lastVisitTime"] = $adodb->Quote($value['lastVisitTime']);
+        $up_data["visitCount"] = $adodb->Quote($value['visitCount']);
+
+        $comma = "";
+        $sql = " Update historyFinder set ";
+        foreach ($up_data as $up_key=>$up_val) {
+            $sql .= $comma.$up_key." = ".$up_val;
+            $comma =", ";
+        }
+        $sql .= " where urlid = " . $adodb->Quote($value['id']);
+        $sql .= " and userid = " . $adodb->Quote($userid);
         $rs = $adodb->Execute($sql);
     }
 }
