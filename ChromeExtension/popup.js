@@ -149,8 +149,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                         document.getElementById('indexArea').innerHTML = "Hello, " + username;
                         // index recently history, because chrome can't index webpage in realtime
-                        // after speed test, 20 is the limit
-                        updateRecentHistory(20, function (username) {});
+                        // after speed test, 10 is the limit
+                        updateRecentHistory(10, function (username) {});
                     }
                 }
             );
