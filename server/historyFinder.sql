@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS `historyFinder` (
   `url` text NOT NULL,
   `title` text NOT NULL,
   `text` text NOT NULL,
+  `lastVisitTime` double NOT NULL,
   `visitCount` int(10) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 

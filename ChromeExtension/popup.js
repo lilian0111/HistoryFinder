@@ -66,8 +66,49 @@ String.prototype.replaceAll = function(target, replacement) {
 
 // This is the main function for chrome extension
 document.addEventListener('DOMContentLoaded', function() {
+    console.log("Hello, document.addEventListener");
     var userid = "";
     var username = "";
+
+    // update recently history for top maxResults && one week ago
+    var updateRecentHistory = function (maxResults, callback) {
+        var microsecondsPerWeek = 1000 * 60 * 60 * 24 * 7;
+        var oneWeekAgo = (new Date).getTime() - microsecondsPerWeek;
+        console.log(oneWeekAgo);
+        chrome.history.search(
+            {
+                'text':'',
+                'startTime': oneWeekAgo,
+                'maxResults': maxResults
+            },
+            function (historyItems) {
+                var jsonHistoryItems = '[';
+                // For each history item, get details on all visits.
+                for (var i = 0; i < historyItems.length; ++i) {
+                    var id = historyItems[i].id;
+                    var url = historyItems[i].url;
+                    var title = historyItems[i].title;
+                    var lastVisitTime = historyItems[i].lastVisitTime;
+                    var visitCount = historyItems[i].visitCount;
+                    if (i != 0) {
+                        jsonHistoryItems += ',';
+                    }
+                    jsonHistoryItems += '{"id":"' + id + '",';
+                    jsonHistoryItems += '"url":"' + url + '",';
+                    jsonHistoryItems += '"title":"' + title.replaceAll("\'", "").replaceAll("\"", "").replaceAll("\\", "") + '",';
+                    jsonHistoryItems += '"lastVisitTime":"' + lastVisitTime + '",';
+                    jsonHistoryItems += '"visitCount":"' + visitCount + '"}';
+                }
+                jsonHistoryItems += ']';
+                console.log(jsonHistoryItems);
+                // ajax part
+                ajax.post('http://cml18.csie.ntu.edu.tw/~wentsung/webMining/historyIndexing.php', {"historyItems":jsonHistoryItems, "userid":userid}, function(response) {
+                    callback(username);
+                });
+            }
+        );
+    };
+
     //http://www.bennadel.com/blog/1940-my-safari-browser-sqlite-database-hello-world-example.htm
     var databaseOptions = {
         fileName: "sqliteHistoryFinder",
@@ -107,6 +148,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             username = results.rows.item(key).username;
                         }
                         document.getElementById('indexArea').innerHTML = "Hello, " + username;
+                        // index recently history, because chrome can't index webpage in realtime
+                        // after speed test, 20 is the limit
+                        updateRecentHistory(20, function (username) {});
                     }
                 }
             );
@@ -196,41 +240,8 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log(response);
             if ('error' != response) {
                 username = response;
-                var microsecondsPerWeek = 1000 * 60 * 60 * 24 * 7;
-                var oneWeekAgo = (new Date).getTime() - microsecondsPerWeek;
-                console.log(oneWeekAgo);
-                chrome.history.search(
-                    {
-                        'text':'',
-                        'startTime': oneWeekAgo,
-                        'maxResults':500
-                    },
-                    function (historyItems) {
-                        var jsonHistoryItems = '[';
-                        // For each history item, get details on all visits.
-                        for (var i = 0; i < historyItems.length; ++i) {
-                            var id = historyItems[i].id;
-                            var url = historyItems[i].url;
-                            var title = historyItems[i].title;
-                            var lastVisitTime = historyItems[i].lastVisitTime;
-                            var visitCount = historyItems[i].visitCount;
-                            if (i != 0) {
-                                jsonHistoryItems += ',';
-                            }
-                            jsonHistoryItems += '{"id":"' + id + '",';
-                            jsonHistoryItems += '"url":"' + url + '",';
-                            jsonHistoryItems += '"title":"' + title.replaceAll("\'", "").replaceAll("\"", "").replaceAll("\\", "") + '",';
-                            jsonHistoryItems += '"lastVisitTime":"' + lastVisitTime + '",';
-                            jsonHistoryItems += '"visitCount":"' + visitCount + '"}';
-                        }
-                        jsonHistoryItems += ']';
-                        console.log(jsonHistoryItems);
-                        // ajax part
-                        ajax.post('http://cml18.csie.ntu.edu.tw/~wentsung/webMining/historyIndexing.php', {"historyItems":jsonHistoryItems, "userid":userid}, function(response) {
-                            saveUserid(username);
-                        });
-                    }
-                );
+                // choose top 500 history for speed
+                updateRecentHistory(500, saveUserid);
             } else {
                 document.getElementById('indexArea').innerHTML = "This is wrong userid, " + userid;
             }
