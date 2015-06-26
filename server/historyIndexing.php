@@ -4,6 +4,8 @@
  */
 session_start();
 include_once('../sbir/bin/connect.php');
+// require_once(__DIR__ . "/Html2Text.php");
+// require_once(__DIR__ . "/Html2TextException.php");
 
 $userid = $_POST['userid'];
 $historyItems = json_decode($_POST['historyItems'], true);
@@ -14,8 +16,25 @@ foreach ($historyItems as $key => $value) {
     $urlArray[] = $value['url'];
 }
 
-$contextArray = async_get_url($urlArray);
+$sourceContextArray = async_get_url($urlArray);
 
+$contextArray = array();
+// prune html tag
+foreach ($sourceContextArray as $value) {
+    // $patterns = array();
+    // $patterns[0] = '/<style(.|\n)*?<\/style>/';
+    // $patterns[1] = '/<script(.|\n)*?<\/script>/';
+    // $patterns[2] = '/<(.|\n)*>/';
+    // $patterns[3] = '/\n/';
+    // $replacements = array();
+    // $replacements[0] = '';
+    // $replacements[1] = '';
+    // $replacements[2] = '';
+    // $replacements[3] = '';
+    // $contextArray[] = preg_replace($patterns, $replacements, $value);
+    $contextArray[] = html2text($value);
+    // $contextArray[] = convert_html_to_text($value);
+}
 
 foreach ($historyItems as $key => $value) {
     $sql = "Select urlid from historyFinder ";
@@ -39,6 +58,7 @@ foreach ($historyItems as $key => $value) {
     } else {
         $up_data = array();
 
+        $up_data["text"] = $adodb->Quote($contextArray[$key]);
         $up_data["lastVisitTime"] = $adodb->Quote($value['lastVisitTime']);
         $up_data["visitCount"] = $adodb->Quote($value['visitCount']);
 
@@ -56,6 +76,49 @@ foreach ($historyItems as $key => $value) {
 // echo '</pre>';
 
 include_once('../sbir/bin/disconnect.php');
+
+// http://stackoverflow.com/questions/1884550/converting-html-to-plain-text-in-php-for-e-mail
+function html2text($Document) {
+    $Rules = array (
+        '@<script[^>]*?>.*?</script>@si',
+        '@<style[^>]*?>.*?</style>@si',
+        '@<[\/\!]*?[^<>]*?>@si',
+        '@([\r\n])[\s]+@',
+        '@&(quot|#34);@i',
+        '@&(amp|#38);@i',
+        '@&(lt|#60);@i',
+        '@&(gt|#62);@i',
+        '@&(nbsp|#160);@i',
+        '@&(iexcl|#161);@i',
+        '@&(cent|#162);@i',
+        '@&(pound|#163);@i',
+        '@&(copy|#169);@i',
+        '@&(reg|#174);@i',
+        '@&#(d+);@e'
+    );
+    $Replace = array (
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
+    );
+    return preg_replace($Rules, $Replace, $Document);
+}
+
+// function convert_html_to_text($html) {
+//     return Html2Text\Html2Text::convert($html);
+// }
 
 function async_get_url($url_array) {
     // http://blog.longwin.com.tw/2009/10/php-multi-thread-curl-2009/
