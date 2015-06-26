@@ -13,26 +13,41 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log(historyItems);
                 for (var i = 0; i < historyItems.length; ++i) {
                     var url = historyItems[i].url;
-                    console.log(url);
-                    if(url.match(/facebook/)){
+                    //console.log(url);
+                    if(url.match(/facebook/)||url.match(/fbcdn/)){
                         continue;
                     }
                     else if(url.match(/http:/)||url.match(/https:/)){
-                        getUrlContent(historyItems[i].id,url);
+                        getUrlContent(historyItems[i]);
                     }
 
                 }
             }
         );
     };
-    function getUrlContent(id,url){
+    function getUrlContent(item){
+        
         $.ajax({
-            url:url,
+            url:item.url,
             type: 'GET',
+            async: true,
             success:function(msg){
+                console.log(item.title)
                 msg = html2text(msg);
-                chrome.storage.sync.set({id:id,data:msg},function(){
-                    console.log('save '+url+' in '+id);
+                var test = JSON.stringify({
+                    title:html2text(item.title),
+                    url:item.url,
+                    visitCount:item.visitCount,
+                    lastVisitTime:item.lastVisitTime,
+                    text: msg.substring(0,3000)
+                });
+                //console.log(test);
+                var str = '{"'+item.id+'":'+test+'}';
+                //console.log(str);
+                var obj = JSON.parse(str);
+                console.log(obj);
+                chrome.storage.local.set(obj,function(){
+                    console.log('save '+item.url+' in '+item.id);
                 });
             }
         });
@@ -41,7 +56,10 @@ document.addEventListener('DOMContentLoaded', function() {
         html = html.replace(/<script[^>]+?\/>|<script(.|\s)*?\/script>/ig, '');
         html = html.replace(/<noscript[^>]+?\/>|<noscript(.|\s)*?\/noscript>/ig, '');
         html = html.replace(/<style[^>]+?\/>|<style(.|\s)*?\/style>/ig, '');
-        html = html.replace(/<.*?>/ig, '');
+        html = html.replace(/<(\?)label>/ig, '');
+        html = html.replace(/<\!--(.|\s)*?-->/ig, ''); 
+        html = html.replace(/<(.|\s)*?>/ig, '');
+        html = html.replace(/['"\\]/ig, '');
         html = html.replace(/\s+/ig, ' ');
         html = html.replace(/&(quot|#34);/ig, '');
         html = html.replace(/&(amp|#38);/ig, '');
@@ -57,5 +75,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         return html;
     }
-    getRecentHistory(10);
+    document.getElementById('indexButton').addEventListener('click', function() {
+        chrome.storage.local.clear(function(){
+            console.log('clear');
+            getRecentHistory(500);
+        });
+    });
 });
