@@ -1,0 +1,38 @@
+{
+  "manifest_version": 2,
+
+  "name": "History Finder local",
+  "description": "This extension will find your history record",
+  "version": "0.4",
+
+  "commands" : {
+    "reload_extension" : {
+      "suggested_key" : {
+        "default" : "Ctrl+Shift+Q",
+        "windows" : "Ctrl+Shift+Q",
+        "mac" : "MacCtrl+Shift+Q",
+        "chromeos" : "Ctrl+Shift+Q",
+        "linux" : "Ctrl+Shift+Q"
+      },
+      "description" : "shortcut for reloading extensions"
+    }
+  },
+
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+
+  "browser_action": {
+    "default_icon": "icon16.png",
+    "default_popup": "popup.html"
+  },
+
+  "permissions": [
+    "history",
+    "activeTab",
+    "http://*/*",
+    "https://*/*"
+  ]
+}
