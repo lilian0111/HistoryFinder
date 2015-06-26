@@ -19,6 +19,8 @@ function html2text(html) {
     html = html.replace(/<script[^>]+?\/>|<script(.|\s)*?\/script>/ig, '');
     html = html.replace(/<noscript[^>]+?\/>|<noscript(.|\s)*?\/noscript>/ig, '');
     html = html.replace(/<style[^>]+?\/>|<style(.|\s)*?\/style>/ig, '');
+    html = html.replace(/<(\?)label>/ig, '');
+    html = html.replace(/<\!--(.|\s)*?-->/ig, ''); 
     html = html.replace(/<.*?>/ig, '');
     html = html.replace(/\s+/ig, ' ');
     html = html.replace(/&(quot|#34);/ig, '');
@@ -31,7 +33,7 @@ function html2text(html) {
     html = html.replace(/&(pound|#163);/ig, '');
     html = html.replace(/&(copy|#169);/ig, '');
     html = html.replace(/&(reg|#174);/ig, '');
-    html = html.replace(/&#(d+);/, '');
+    html = html.replace(/&#(d+);/g, '');
 
     return html;
 }
