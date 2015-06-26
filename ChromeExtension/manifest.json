@@ -32,6 +32,8 @@
   "permissions": [
     "history",
     "activeTab",
+    "tabs",
+    "<all_urls>",
     "http://cml18.csie.ntu.edu.tw/"
   ]
 }
