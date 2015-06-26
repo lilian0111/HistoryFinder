@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             function (historyItems) {
                 console.log(historyItems);
+                console.log(historyItems.length);
                 for (var i = 0; i < historyItems.length; ++i) {
                     var url = historyItems[i].url;
                     //console.log(url);
@@ -30,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
         $.ajax({
             url:item.url,
             type: 'GET',
-            async: true,
+            async: false,
             success:function(msg){
                 console.log(item.title)
                 msg = html2text(msg);
@@ -45,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 var str = '{"'+item.id+'":'+test+'}';
                 //console.log(str);
                 var obj = JSON.parse(str);
-                console.log(obj);
+                //console.log(obj);
                 chrome.storage.local.set(obj,function(){
                     console.log('save '+item.url+' in '+item.id);
                 });
@@ -78,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('indexButton').addEventListener('click', function() {
         chrome.storage.local.clear(function(){
             console.log('clear');
-            getRecentHistory(500);
+            getRecentHistory(10);
         });
     });
 });
