@@ -1,8 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
-    var getRecentHistory = function (maxResults) {
+    function getRecentHistory(maxResults) {
         var minisecondsPerWeek = 1000 * 60 * 60 * 24 * 7;
         var oneWeekAgo = (new Date).getTime() - minisecondsPerWeek;
-        console.log(oneWeekAgo);
         chrome.history.search(
             {
                 'text': '',
@@ -14,14 +13,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log(historyItems.length);
                 for (var i = 0; i < historyItems.length; ++i) {
                     var url = historyItems[i].url;
-                    //console.log(url);
                     if(url.match(/facebook/)||url.match(/fbcdn/)||url.match(/\.jpg/)||url.match(/\.png/)){
                         continue;
                     }
-                    else if(url.match(/http:/)||url.match(/https:/)){
+                    else if(url.match(/http:/) || url.match(/https:/)){
                         getUrlContent(historyItems[i]);
                     }
-
                 }
             }
         );
@@ -33,27 +30,22 @@ document.addEventListener('DOMContentLoaded', function() {
             type: 'GET',
             async: true,
             success: function(msg){
-                console.log(item.title + " " + msg.length)
-                msg = html2text(msg);
-                var test = JSON.stringify({
+                var entry = {};
+                entry[item.id] = {
                     id: item.id,
                     title: html2text(item.title),
                     url: item.url,
                     visitCount: item.visitCount,
                     lastVisitTime: item.lastVisitTime,
-                    text: msg.substring(0,3000)
-                });
-                //console.log(test);
-                var str = '{"' + item.id + '":' + test + '}';
-                //console.log(str);
-                var obj = JSON.parse(str);
-                //console.log(obj);
-                chrome.storage.local.set(obj,function(){
-                    console.log('save ' + item.url + ' in ' + item.id);
+                    text: html2text(msg).substring(0,3000)
+                };
+                chrome.storage.local.set(entry, function(){
+                    console.log('save "' + item.title + '" in ' + item.id);
                 });
             }
         });
     }
+    
     function html2text(html) {
         html = html.replace(/<script[^>]+?\/>|<script(.|\s)*?\/script>/ig, '');
         html = html.replace(/<noscript[^>]+?\/>|<noscript(.|\s)*?\/noscript>/ig, '');

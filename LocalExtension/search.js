@@ -29,8 +29,7 @@ function calInverseDocFreq(dfValue, docNum){
     return (dfValue == 0)? (0) : (Math.log(docNum / dfValue));
 }
 
-function searchHistory(msg){
-    var searchText = document.getElementById('searchText').value.split(/\s+/);
+function extensionSearch(msg, searchText){
     var resultURL = '<ul>';
     var historyRank = [];
     var docTermCount = {};
@@ -117,12 +116,30 @@ function searchHistory(msg){
     
     // show result
     for(var i = 0; i < historyRank.length; i++){
+        if(historyRank[i].rank <= 0)
+            break;
         resultURL += '<li>';
         resultURL += '<a href="' + msg[historyRank[i].id].url + '" target="_blank">' + msg[historyRank[i].id].title + '</a>' + ' ' + historyRank[i].rank;
         resultURL += '</li>';
     }
-    
     resultURL += '</ul>';
+    
+    return resultURL;
+}
+
+
+function searchHistory(msg){
+    var searchText = document.getElementById('searchText').value.split(/\s+/);
+    for(var i = searchText.length - 1; i >= 0; i--){
+        if(searchText[i].length == 0)
+            searchText.splice(i, 1);
+    }
+    
+    var resultURL = '';
+    if(searchText.length > 0){
+        resultURL = extensionSearch(msg, searchText);
+    }
+    
     var showHTML = "Chrome extension API for ";
     showHTML += document.getElementById('searchText').value;
     showHTML += resultURL;

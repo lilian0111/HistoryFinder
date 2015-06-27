@@ -3,7 +3,7 @@
 
   "name": "History Finder local",
   "description": "This extension will find your history record",
-  "version": "0.4",
+  "version": "0.5",
 
   "commands" : {
     "reload_extension" : {
@@ -24,6 +24,10 @@
     "128": "icon128.png"
   },
 
+  "background": {
+    "scripts": ["background.js"]
+  },
+
   "browser_action": {
     "default_icon": "icon16.png",
     "default_popup": "popup.html"
@@ -32,8 +36,9 @@
   "permissions": [
     "history",
     "activeTab",
-    "http://*/*",
-    "https://*/*",
-    "storage"
+    "tabs",
+    "storage",
+    "webNavigation",
+    "<all_urls>"
   ]
 }
