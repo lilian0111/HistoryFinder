@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     var getRecentHistory = function (maxResults) {
-        var microsecondsPerWeek = 1000 * 60 * 60 * 24 * 7;
-        var oneWeekAgo = (new Date).getTime() - microsecondsPerWeek;
+        var minisecondsPerWeek = 1000 * 60 * 60 * 24 * 7;
+        var oneWeekAgo = (new Date).getTime() - minisecondsPerWeek;
         console.log(oneWeekAgo);
         chrome.history.search(
             {
-                'text':'',
+                'text': '',
                 'startTime': oneWeekAgo,
                 'maxResults': maxResults
             },
@@ -26,29 +26,30 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         );
     };
+    
     function getUrlContent(item){
-        
         $.ajax({
-            url:item.url,
+            url: item.url,
             type: 'GET',
             async: true,
-            success:function(msg){
-                console.log(item.title+" "+msg.length)
+            success: function(msg){
+                console.log(item.title + " " + msg.length)
                 msg = html2text(msg);
                 var test = JSON.stringify({
-                    title:html2text(item.title),
-                    url:item.url,
-                    visitCount:item.visitCount,
-                    lastVisitTime:item.lastVisitTime,
+                    id: item.id,
+                    title: html2text(item.title),
+                    url: item.url,
+                    visitCount: item.visitCount,
+                    lastVisitTime: item.lastVisitTime,
                     text: msg.substring(0,3000)
                 });
                 //console.log(test);
-                var str = '{"'+item.id+'":'+test+'}';
+                var str = '{"' + item.id + '":' + test + '}';
                 //console.log(str);
                 var obj = JSON.parse(str);
                 //console.log(obj);
                 chrome.storage.local.set(obj,function(){
-                    console.log('save '+item.url+' in '+item.id);
+                    console.log('save ' + item.url + ' in ' + item.id);
                 });
             }
         });
@@ -76,31 +77,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
         return html;
     }
+    
     document.getElementById('indexButton').addEventListener('click', function() {
         chrome.storage.local.clear(function(){
             console.log('clear');
             getRecentHistory(500);
         });
     });
+    
     document.getElementById('searchImage').addEventListener('click', function() {
-        var searchText = document.getElementById('searchText').value;
-        var resultURL = '';
-        chrome.storage.local.get(function(msg){
-
-            resultURL = '<ul>';
-            for(var i in msg){
-                if(msg[i].text.match(searchText)||msg[i].title.match(searchText)){
-                    resultURL += '<li>';
-                    resultURL += '<a href="' + msg[i].url + '" target="_blank">' + msg[i].title + '</a>';
-                    resultURL += '</li>';
-                }
-            }
-            resultURL += '</ul>';
-            var showHTML = "Chrome extension API for ";
-            showHTML += document.getElementById('searchText').value;
-            showHTML += resultURL;
-            document.getElementById('showResult').innerHTML = showHTML;
-        });
-        
+        chrome.storage.local.get(searchHistory);
+    });
+    
+    document.getElementById('searchText').addEventListener('keydown', function(e){
+        code = (e.keyCode ? e.keyCode : e.which);
+        // for Enter key
+        if (code == 13){
+            chrome.storage.local.get(searchHistory);
+        }
     });
 });
