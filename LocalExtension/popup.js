@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 for (var i = 0; i < historyItems.length; ++i) {
                     var url = historyItems[i].url;
                     //console.log(url);
-                    if(url.match(/facebook/)||url.match(/fbcdn/)){
+                    if(url.match(/facebook/)||url.match(/fbcdn/)||url.match(/\.jpg/)||url.match(/\.png/)){
                         continue;
                     }
                     else if(url.match(/http:/)||url.match(/https:/)){
@@ -31,9 +31,9 @@ document.addEventListener('DOMContentLoaded', function() {
         $.ajax({
             url:item.url,
             type: 'GET',
-            async: false,
+            async: true,
             success:function(msg){
-                console.log(item.title)
+                console.log(item.title+" "+msg.length)
                 msg = html2text(msg);
                 var test = JSON.stringify({
                     title:html2text(item.title),
@@ -79,7 +79,28 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('indexButton').addEventListener('click', function() {
         chrome.storage.local.clear(function(){
             console.log('clear');
-            getRecentHistory(10);
+            getRecentHistory(500);
         });
+    });
+    document.getElementById('searchImage').addEventListener('click', function() {
+        var searchText = document.getElementById('searchText').value;
+        var resultURL = '';
+        chrome.storage.local.get(function(msg){
+
+            resultURL = '<ul>';
+            for(var i in msg){
+                if(msg[i].text.match(searchText)||msg[i].title.match(searchText)){
+                    resultURL += '<li>';
+                    resultURL += '<a href="' + msg[i].url + '" target="_blank">' + msg[i].title + '</a>';
+                    resultURL += '</li>';
+                }
+            }
+            resultURL += '</ul>';
+            var showHTML = "Chrome extension API for ";
+            showHTML += document.getElementById('searchText').value;
+            showHTML += resultURL;
+            document.getElementById('showResult').innerHTML = showHTML;
+        });
+        
     });
 });
