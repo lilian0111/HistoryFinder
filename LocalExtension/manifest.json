@@ -25,7 +25,10 @@
   },
 
   "background": {
-    "scripts": ["background.js"]
+    "scripts": [
+      "html2text.js", 
+      "background.js"
+    ]
   },
 
   "browser_action": {

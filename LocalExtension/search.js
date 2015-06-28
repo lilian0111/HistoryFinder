@@ -119,7 +119,7 @@ function extensionSearch(msg, searchText){
         if(historyRank[i].rank <= 0)
             break;
         resultURL += '<li>';
-        resultURL += '<a href="' + msg[historyRank[i].id].url + '" target="_blank">' + msg[historyRank[i].id].title + '</a>' + ' ' + historyRank[i].rank;
+        resultURL += '<a href="' + msg[historyRank[i].id].trueUrl + '" target="_blank">' + msg[historyRank[i].id].trueTitle + '</a>' + ' ' + historyRank[i].rank;
         resultURL += '</li>';
     }
     resultURL += '</ul>';
@@ -128,7 +128,7 @@ function extensionSearch(msg, searchText){
 }
 
 function searchHistory(msg){
-    var searchText = document.getElementById('searchText').value.split(/\s+/);
+    var searchText = document.getElementById('searchText').value.toLowerCase().split(/\s+/);
     for(var i = searchText.length - 1; i >= 0; i--){
         if(searchText[i].length == 0)
             searchText.splice(i, 1);

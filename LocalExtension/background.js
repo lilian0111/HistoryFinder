@@ -34,8 +34,12 @@ chrome.webNavigation.onDOMContentLoaded.addListener(function(details){
         code: 'tabId = ' + details.tabId + ';'
     }, function() {
         chrome.tabs.executeScript(details.tabId, {
-            file: "getPagesContent.js"
+            file: "html2text.js"
         }, function() {
+            chrome.tabs.executeScript(details.tabId, {
+                file: "getPagesContent.js"
+            }, function() {
+            });
         });
     });
 });
@@ -54,11 +58,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
                 
                 var obj = {
                     id: visitItems[0].id,
-                    title: tab.title,
-                    url: tab.url,
+                    title: html2text(tab.title),
+                    text: request.text,
+                    url: html2text(tab.url),
                     visitCount: visitItems.length,
                     lastVisitTime: (new Date).getTime(),
-                    text: request.text
+                    trueTitle: tab.title,
+                    trueUrl: tab.url
                 }
                 storeToLocal(obj);
             }

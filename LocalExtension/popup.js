@@ -33,14 +33,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 entry[item.id] = {
                     id: item.id,
                     title: html2text(item.title),
-                    url: item.url,
+                    text: html2text(msg).substring(0,3000),
+                    url: html2text(item.url),
                     visitCount: item.visitCount,
                     lastVisitTime: item.lastVisitTime,
-                    text: html2text(msg).substring(0,3000)
+                    trueTitle: item.title,
+                    trueUrl: item.url
                 };
                 chrome.storage.local.set(entry, function(){
                     checkHistoryCounter();
-                    console.log('save "' + item.title + '" in ' + item.id);
+                    console.log('save "' + item.trueTitle + '" in ' + item.id);
                 });
             },
             error: function() {
@@ -56,31 +58,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (historyCounter == 0) {
             showIndexButton();
         }
-    }
-    
-    // convert html to text
-    function html2text(html) {
-        html = html.replace(/<script[^>]+?\/>|<script(.|\s)*?\/script>/ig, '');
-        html = html.replace(/<noscript[^>]+?\/>|<noscript(.|\s)*?\/noscript>/ig, '');
-        html = html.replace(/<style[^>]+?\/>|<style(.|\s)*?\/style>/ig, '');
-        html = html.replace(/<(\?)label>/ig, '');
-        html = html.replace(/<\!--(.|\s)*?-->/ig, '');
-        html = html.replace(/<(.|\s)*?>/ig, '');
-        html = html.replace(/['"\\]/ig, '');
-        html = html.replace(/&(quot|#34);/ig, '');
-        html = html.replace(/&(amp|#38);/ig, '');
-        html = html.replace(/&(lt|#60);/ig, '');
-        html = html.replace(/&(gt|#62);/ig, '');
-        html = html.replace(/&(nbsp|#160);/ig, '');
-        html = html.replace(/&(iexcl|#161);/ig, '');
-        html = html.replace(/&(cent|#162);/ig, '');
-        html = html.replace(/&(pound|#163);/ig, '');
-        html = html.replace(/&(copy|#169);/ig, '');
-        html = html.replace(/&(reg|#174);/ig, '');
-        html = html.replace(/&#(d+);/, '');
-        html = html.replace(/\s+/ig, ' ');
-
-        return html;
     }
 
     // for indexing button
@@ -117,4 +94,3 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-
