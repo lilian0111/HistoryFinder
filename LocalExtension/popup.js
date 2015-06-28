@@ -13,17 +13,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log(historyItems.length);
                 for (var i = 0; i < historyItems.length; ++i) {
                     var url = historyItems[i].url;
-                    if(url.match(/facebook/)||url.match(/fbcdn/)||url.match(/\.jpg/)||url.match(/\.png/)){
+                    if(url.match(/facebook/)||url.match(/fbcdn/)||url.match(/phpmyadmin/)||url.match(/\.jpg/)||url.match(/\.png/)){
                         continue;
                     }
                     else if(url.match(/http:/) || url.match(/https:/)){
                         getUrlContent(historyItems[i]);
                     }
                 }
+                // change progess bar to index button
+                document.getElementById('indexArea').innerHTML = '<input type="button" value="index" id="indexButton"/>';
+                addIndexListener();
             }
         );
     };
-    
+
     function getUrlContent(item){
         $.ajax({
             url: item.url,
@@ -45,13 +48,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
+
     function html2text(html) {
         html = html.replace(/<script[^>]+?\/>|<script(.|\s)*?\/script>/ig, '');
         html = html.replace(/<noscript[^>]+?\/>|<noscript(.|\s)*?\/noscript>/ig, '');
         html = html.replace(/<style[^>]+?\/>|<style(.|\s)*?\/style>/ig, '');
         html = html.replace(/<(\?)label>/ig, '');
-        html = html.replace(/<\!--(.|\s)*?-->/ig, ''); 
+        html = html.replace(/<\!--(.|\s)*?-->/ig, '');
         html = html.replace(/<(.|\s)*?>/ig, '');
         html = html.replace(/['"\\]/ig, '');
         html = html.replace(/\s+/ig, ' ');
@@ -69,23 +72,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
         return html;
     }
-    
-    document.getElementById('indexButton').addEventListener('click', function() {
-        chrome.storage.local.clear(function(){
-            console.log('clear');
-            getRecentHistory(500);
+
+    // for indexing button
+    var addIndexListener = function () {
+        document.getElementById('indexButton').addEventListener('click', function() {
+            document.getElementById('indexArea').innerHTML = '<img src="progress_bar.gif">';
+            chrome.storage.local.clear(function(){
+                console.log('clear');
+                getRecentHistory(500);
+            });
         });
-    });
-    
+    };
+    addIndexListener();
+    // send query kerword and show the result
     document.getElementById('searchImage').addEventListener('click', function() {
         chrome.storage.local.get(searchHistory);
     });
-    
+    // on the text input, add an enter key to submit query keyword
     document.getElementById('searchText').addEventListener('keydown', function(e){
         code = (e.keyCode ? e.keyCode : e.which);
         // for Enter key
         if (code == 13){
             chrome.storage.local.get(searchHistory);
         }
+    });
+    // reset all
+    document.getElementById('refreshImage').addEventListener('click', function() {
+        chrome.storage.local.clear(function(){
+            console.log('clear all');
+        });
     });
 });
