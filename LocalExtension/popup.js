@@ -1,44 +1,33 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // set counter to check real ending time
+    // set counter to check ending time
     var historyCounter = 0;
-    var historyLength = 0;
-
+    
+    // use Chrome API to get recent history
     function getRecentHistory(maxResults) {
-        var minisecondsPerYear = 1000 * 60 * 60 * 24 * 365;
-        var oneYearAgo = (new Date).getTime() - minisecondsPerYear;
         chrome.history.search(
             {
                 'text': '',
-                'startTime': oneYearAgo,
+                'startTime': 0,
                 'maxResults': maxResults
             },
             function (historyItems) {
                 console.log(historyItems);
                 console.log(historyItems.length);
-                historyCounter = 0;
-                historyLength = historyItems.length;
-                for (var i = 0; i < historyItems.length; ++i) {
-                    var url = historyItems[i].url;
-                    if(url.match(/facebook/)||url.match(/fbcdn/)||url.match(/phpmyadmin/)||url.match(/\.jpg/)||url.match(/\.png/)){
-                        checkHistoryCounter();
-                        continue;
-                    }
-                    else if(url.match(/http:/) || url.match(/https:/)){
-                        getUrlContent(historyItems[i]);
-                    } else {
-                        checkHistoryCounter();
-                    }
+                historyCounter = historyItems.length;
+                for(var i = 0; i < historyItems.length; ++i){
+                    getUrlContent(historyItems[i]);
                 }
             }
         );
     };
-
+    
+    // use ajax to retrieve web pages
     function getUrlContent(item){
         $.ajax({
             url: item.url,
             type: 'GET',
             async: true,
-            timeout: 10000, // 10s
+            timeout: 60000, // 60s
             success: function(msg){
                 var entry = {};
                 entry[item.id] = {
@@ -60,17 +49,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // if the url down, then check counter
+    // reduce counter value and check
     function checkHistoryCounter() {
-        historyCounter++;
+        historyCounter--;
         console.log(historyCounter);
-        if (historyCounter == historyLength) {
-            // change progess bar to index button
-            document.getElementById('indexArea').innerHTML = '<input type="button" value="index" id="indexButton"/>';
-            addIndexListener();
+        if (historyCounter == 0) {
+            showIndexButton();
         }
     }
-
+    
+    // convert html to text
     function html2text(html) {
         html = html.replace(/<script[^>]+?\/>|<script(.|\s)*?\/script>/ig, '');
         html = html.replace(/<noscript[^>]+?\/>|<noscript(.|\s)*?\/noscript>/ig, '');
@@ -79,7 +67,6 @@ document.addEventListener('DOMContentLoaded', function() {
         html = html.replace(/<\!--(.|\s)*?-->/ig, '');
         html = html.replace(/<(.|\s)*?>/ig, '');
         html = html.replace(/['"\\]/ig, '');
-        html = html.replace(/\s+/ig, ' ');
         html = html.replace(/&(quot|#34);/ig, '');
         html = html.replace(/&(amp|#38);/ig, '');
         html = html.replace(/&(lt|#60);/ig, '');
@@ -91,12 +78,14 @@ document.addEventListener('DOMContentLoaded', function() {
         html = html.replace(/&(copy|#169);/ig, '');
         html = html.replace(/&(reg|#174);/ig, '');
         html = html.replace(/&#(d+);/, '');
+        html = html.replace(/\s+/ig, ' ');
 
         return html;
     }
 
     // for indexing button
-    var addIndexListener = function () {
+    function showIndexButton(){
+        document.getElementById('indexArea').innerHTML = '<input type="button" value="index" id="indexButton"/>';
         document.getElementById('indexButton').addEventListener('click', function() {
             document.getElementById('indexArea').innerHTML = '<img src="progress_bar.gif">';
             chrome.storage.local.clear(function(){
@@ -104,12 +93,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 getRecentHistory(500);
             });
         });
-    };
-    addIndexListener();
+    }
+    showIndexButton();
+    
     // send query kerword and show the result
     document.getElementById('searchImage').addEventListener('click', function() {
         chrome.storage.local.get(searchHistory);
     });
+    
     // on the text input, add an enter key to submit query keyword
     document.getElementById('searchText').addEventListener('keydown', function(e){
         code = (e.keyCode ? e.keyCode : e.which);
@@ -118,10 +109,12 @@ document.addEventListener('DOMContentLoaded', function() {
             chrome.storage.local.get(searchHistory);
         }
     });
-    // reset all
+    
+    // clear all record
     document.getElementById('refreshImage').addEventListener('click', function() {
         chrome.storage.local.clear(function(){
             console.log('clear all');
         });
     });
 });
+

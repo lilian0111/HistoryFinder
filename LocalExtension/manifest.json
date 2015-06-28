@@ -3,7 +3,7 @@
 
   "name": "History Finder local",
   "description": "This extension will find your history record",
-  "version": "0.8",
+  "version": "0.9",
 
   "commands" : {
     "reload_extension" : {

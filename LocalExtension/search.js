@@ -127,7 +127,6 @@ function extensionSearch(msg, searchText){
     return resultURL;
 }
 
-
 function searchHistory(msg){
     var searchText = document.getElementById('searchText').value.split(/\s+/);
     for(var i = searchText.length - 1; i >= 0; i--){
