@@ -1,28 +1,38 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // set counter to check real ending time
+    var historyCounter = 0;
+    var historyLength = 0;
+
     function getRecentHistory(maxResults) {
-        var minisecondsPerWeek = 1000 * 60 * 60 * 24 * 7;
-        var oneWeekAgo = (new Date).getTime() - minisecondsPerWeek;
+        var minisecondsPerYear = 1000 * 60 * 60 * 24 * 365;
+        var oneYearAgo = (new Date).getTime() - minisecondsPerYear;
         chrome.history.search(
             {
                 'text': '',
-                'startTime': oneWeekAgo,
+                'startTime': oneYearAgo,
                 'maxResults': maxResults
             },
             function (historyItems) {
                 console.log(historyItems);
                 console.log(historyItems.length);
+                historyLength = historyItems.length;
                 for (var i = 0; i < historyItems.length; ++i) {
                     var url = historyItems[i].url;
                     if(url.match(/facebook/)||url.match(/fbcdn/)||url.match(/phpmyadmin/)||url.match(/\.jpg/)||url.match(/\.png/)){
+                        historyCounter++;
+                        console.log(historyCounter);
                         continue;
                     }
                     else if(url.match(/http:/) || url.match(/https:/)){
                         getUrlContent(historyItems[i]);
+                    } else {
+                        historyCounter++;
+                        console.log(historyCounter);
                     }
                 }
                 // change progess bar to index button
-                document.getElementById('indexArea').innerHTML = '<input type="button" value="index" id="indexButton"/>';
-                addIndexListener();
+                // document.getElementById('indexArea').innerHTML = '<input type="button" value="index" id="indexButton"/>';
+                // addIndexListener();
             }
         );
     };
@@ -43,8 +53,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     text: html2text(msg).substring(0,3000)
                 };
                 chrome.storage.local.set(entry, function(){
+                    historyCounter++;
+                    console.log(historyCounter);
+                    if (historyCounter == historyLength) {
+                        // change progess bar to index button
+                        document.getElementById('indexArea').innerHTML = '<input type="button" value="index" id="indexButton"/>';
+                        addIndexListener();
+                    }
                     console.log('save "' + item.title + '" in ' + item.id);
                 });
+            },
+            error: function() {
+                historyCounter++;
+                console.log(historyCounter);
             }
         });
     }
