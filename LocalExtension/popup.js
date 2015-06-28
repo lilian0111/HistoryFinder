@@ -15,24 +15,20 @@ document.addEventListener('DOMContentLoaded', function() {
             function (historyItems) {
                 console.log(historyItems);
                 console.log(historyItems.length);
+                historyCounter = 0;
                 historyLength = historyItems.length;
                 for (var i = 0; i < historyItems.length; ++i) {
                     var url = historyItems[i].url;
                     if(url.match(/facebook/)||url.match(/fbcdn/)||url.match(/phpmyadmin/)||url.match(/\.jpg/)||url.match(/\.png/)){
-                        historyCounter++;
-                        console.log(historyCounter);
+                        checkHistoryCounter();
                         continue;
                     }
                     else if(url.match(/http:/) || url.match(/https:/)){
                         getUrlContent(historyItems[i]);
                     } else {
-                        historyCounter++;
-                        console.log(historyCounter);
+                        checkHistoryCounter();
                     }
                 }
-                // change progess bar to index button
-                // document.getElementById('indexArea').innerHTML = '<input type="button" value="index" id="indexButton"/>';
-                // addIndexListener();
             }
         );
     };
@@ -42,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
             url: item.url,
             type: 'GET',
             async: true,
+            timeout: 10000, // 10s
             success: function(msg){
                 var entry = {};
                 entry[item.id] = {
@@ -53,21 +50,25 @@ document.addEventListener('DOMContentLoaded', function() {
                     text: html2text(msg).substring(0,3000)
                 };
                 chrome.storage.local.set(entry, function(){
-                    historyCounter++;
-                    console.log(historyCounter);
-                    if (historyCounter == historyLength) {
-                        // change progess bar to index button
-                        document.getElementById('indexArea').innerHTML = '<input type="button" value="index" id="indexButton"/>';
-                        addIndexListener();
-                    }
+                    checkHistoryCounter();
                     console.log('save "' + item.title + '" in ' + item.id);
                 });
             },
             error: function() {
-                historyCounter++;
-                console.log(historyCounter);
+                checkHistoryCounter();
             }
         });
+    }
+
+    // if the url down, then check counter
+    function checkHistoryCounter() {
+        historyCounter++;
+        console.log(historyCounter);
+        if (historyCounter == historyLength) {
+            // change progess bar to index button
+            document.getElementById('indexArea').innerHTML = '<input type="button" value="index" id="indexButton"/>';
+            addIndexListener();
+        }
     }
 
     function html2text(html) {
