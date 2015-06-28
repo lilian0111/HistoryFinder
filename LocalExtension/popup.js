@@ -40,6 +40,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     trueTitle: item.title,
                     trueUrl: item.url
                 };
+				if($.trim(entry[item.id].trueTitle) === "")
+					entry[item.id].trueTitle = entry[item.id].text.substring(0,20);
                 chrome.storage.local.set(entry, function(){
                     checkHistoryCounter();
                     console.log('save "' + item.trueTitle + '" in ' + item.id);

@@ -1,3 +1,9 @@
+chrome.browserAction.onClicked.addListener(function(activeTab)
+{
+    var newURL = chrome.extension.getURL('popup.html');
+    chrome.tabs.create({ url: newURL });
+});
+
 // store history entry to local storage
 function storeToLocal(obj){
     chrome.storage.local.get(function(msg){

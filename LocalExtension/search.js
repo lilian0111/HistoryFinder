@@ -30,7 +30,8 @@ function calInverseDocFreq(dfValue, docNum){
 }
 
 function extensionSearch(msg, searchText){
-    var resultURL = '<ul>';
+    //var resultURL = '<ul>';
+	var resultURL = '<table>';
     var historyRank = [];
     var docTermCount = {};
     var docNum = 0;
@@ -114,15 +115,23 @@ function extensionSearch(msg, searchText){
         return (b.rank - a.rank);
     });
     
+	
+	resultURL += '<tr class="head"><th>rank</th><th>link</th>';
     // show result
     for(var i = 0; i < historyRank.length; i++){
         if(historyRank[i].rank <= 0)
             break;
-        resultURL += '<li>';
-        resultURL += '<a href="' + msg[historyRank[i].id].trueUrl + '" target="_blank">' + msg[historyRank[i].id].trueTitle + '</a>' + ' ' + historyRank[i].rank;
-        resultURL += '</li>';
+        //resultURL += '<li>';
+        //resultURL += '<a href="' + msg[historyRank[i].id].trueUrl + '" target="_blank">' + msg[historyRank[i].id].trueTitle + '</a>' + ' ' + historyRank[i].rank;z`
+        //resultURL += '</li>';
+		resultURL += '<tr>';
+		resultURL += '<th>' + historyRank[i].rank.toFixed(4) + '</th>';
+		resultURL += '<td> <a href="' + msg[historyRank[i].id].trueUrl + '" target="_blank">' + msg[historyRank[i].id].trueTitle + '</a></td>';
+		resultURL += '</tr>';
+		
     }
-    resultURL += '</ul>';
+    //resultURL += '</ul>';
+	resultURL += '</table>';
     
     return resultURL;
 }
