@@ -67,10 +67,6 @@ document.addEventListener('DOMContentLoaded', function() {
             async: true,
             dataType: 'html',
             timeout: 60000, // 60s
-            headers: { 
-                Accept : "text/plain; charset=utf-8",
-            	    "Content-Type": "text/plain; charset=utf-8"
-            },
             success: function(msg){
                 storeToLocal(item, html2text(msg).substring(0,3000));
             },
