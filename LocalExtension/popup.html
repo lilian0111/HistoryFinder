@@ -15,21 +15,34 @@
             #status, #ajax {
                 /* avoid an excessively wide status text */
                 white-space: pre;
-                max-width: 420px;
+                /* max-width: 420px; */
             }
-        </style>
-
-        <!--
-            - JavaScript and HTML must be in separate files: see our Content Security
-            - Policy documentation[1] for details and explanation.
-            -
-            - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
-         -->
+			table {
+				border-collapse: collapse;
+			}
+			tr, th, td {
+				text-align: left;
+				padding: 0.3em
+			}
+			td{
+				border-left: 1px solid black;
+			}
+			.head th {
+				border-bottom: 1px solid black;
+			}
+			.head th:last-child {
+				border-left: 1px solid black;
+			}
+			a {
+				text-decoration: none;
+			}
+        </style>		
         <script src="html2text.js"></script>
         <script src="popup.js"></script>
         <script src="search.js"></script>
         <script src="jquery-1.11.3.min.js"></script>
         
+
     </head>
     <body>
         <div id="status">History Finder - Search what you want in your history</div>
