@@ -1,5 +1,5 @@
 // store history entry to local storage
-function storeToLocal(obj){
+function checkAndStore(obj){
     chrome.storage.local.get(function(msg){
         var oldestVisitTime = obj.lastVisitTime, oldestHistory;
         var historyNum = 0;
@@ -66,7 +66,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
                     trueTitle: tab.title,
                     trueUrl: tab.url
                 }
-                storeToLocal(obj);
+                checkAndStore(obj);
             }
         );
     });

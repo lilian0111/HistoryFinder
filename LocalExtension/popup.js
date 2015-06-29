@@ -2,6 +2,41 @@ document.addEventListener('DOMContentLoaded', function() {
     // set counter to check ending time
     var historyCounter = 0;
     
+    // check whether to retrieve web pages or not
+    function checkUrl(url){
+        url = url.substring(url.length - 5).toLowerCase();
+        if( (url.indexOf('.jpg') >= 0) || 
+            (url.indexOf('.jpeg') >= 0) || 
+            (url.indexOf('.png') >= 0) || 
+            (url.indexOf('.gif') >= 0) || 
+            (url.indexOf('.bmp') >= 0) ||
+            (url.indexOf('.pdf') >= 0) )
+            return false;
+        return true;
+    }
+    
+    // store to local storage
+    function storeToLocal(item, text){
+        var entry = {};
+        entry[item.id] = {
+            id: item.id,
+            title: html2text(item.title),
+            text: text,
+            url: html2text(item.url),
+            visitCount: item.visitCount,
+            lastVisitTime: item.lastVisitTime,
+            trueTitle: item.title,
+            trueUrl: item.url
+        };
+        if(entry[item.id].trueTitle.length == 0)
+            entry[item.id].trueTitle = entry[item.id].trueUrl;
+        
+        chrome.storage.local.set(entry, function(){
+            checkHistoryCounter();
+            console.log('save "' + entry[item.id].trueTitle + '" in ' + entry[item.id].id);
+        });
+    }
+    
     // use Chrome API to get recent history
     function getRecentHistory(maxResults) {
         chrome.history.search(
@@ -15,7 +50,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log(historyItems.length);
                 historyCounter = historyItems.length;
                 for(var i = 0; i < historyItems.length; ++i){
-                    getUrlContent(historyItems[i]);
+                    if(checkUrl(historyItems[i].url) == true)
+                        getUrlContent(historyItems[i]);
+                    else
+                        storeToLocal(historyItems[i], '');
                 }
             }
         );
@@ -29,24 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
             async: true,
             timeout: 60000, // 60s
             success: function(msg){
-                var entry = {};
-                entry[item.id] = {
-                    id: item.id,
-                    title: html2text(item.title),
-                    text: html2text(msg).substring(0,3000),
-                    url: html2text(item.url),
-                    visitCount: item.visitCount,
-                    lastVisitTime: item.lastVisitTime,
-                    trueTitle: item.title,
-                    trueUrl: item.url
-                };
-                if(entry[item.id].trueTitle.length == 0)
-                    entry[item.id].trueTitle = entry[item.id].trueUrl;
-                
-                chrome.storage.local.set(entry, function(){
-                    checkHistoryCounter();
-                    console.log('save "' + entry[item.id].trueTitle + '" in ' + entry[item.id].id);
-                });
+                storeToLocal(item, html2text(msg).substring(0,3000));
             },
             error: function() {
                 checkHistoryCounter();
