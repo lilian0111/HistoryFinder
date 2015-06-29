@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
             url: item.url,
             type: 'GET',
             async: true,
+            dataType: 'html',
             timeout: 60000, // 60s
             success: function(msg){
                 storeToLocal(item, html2text(msg).substring(0,3000));
