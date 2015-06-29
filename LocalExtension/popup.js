@@ -40,9 +40,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     trueTitle: item.title,
                     trueUrl: item.url
                 };
+                if(entry[item.id].trueTitle.length == 0)
+                    entry[item.id].trueTitle = entry[item.id].trueUrl;
+                
                 chrome.storage.local.set(entry, function(){
                     checkHistoryCounter();
-                    console.log('save "' + item.trueTitle + '" in ' + item.id);
+                    console.log('save "' + entry[item.id].trueTitle + '" in ' + entry[item.id].id);
                 });
             },
             error: function() {
