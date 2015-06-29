@@ -3,8 +3,8 @@ var OKAPI_K = 1.5;
 var OKAPI_B = 0.8;
 
 var WEIGHT_TITLE = 1;
-var WEIGHT_TEXT  = 1;
-var WEIGHT_URL   = 1;
+var WEIGHT_TEXT  = 0.5;
+var WEIGHT_URL   = 0.1;
 
 // functions
 function countSubString(string, substring){
@@ -122,7 +122,7 @@ function extensionSearch(msg, searchText){
         if(historyRank[i].rank <= 0)
             break;
         //resultURL += '<li>';
-        //resultURL += '<a href="' + msg[historyRank[i].id].trueUrl + '" target="_blank">' + msg[historyRank[i].id].trueTitle + '</a>' + ' ' + historyRank[i].rank;z`
+        //resultURL += '<a href="' + msg[historyRank[i].id].trueUrl + '" target="_blank">' + msg[historyRank[i].id].trueTitle + '</a>' + ' ' + historyRank[i].rank;
         //resultURL += '</li>';
 		resultURL += '<tr>';
 		resultURL += '<th>' + historyRank[i].rank.toFixed(4) + '</th>';
@@ -148,7 +148,7 @@ function searchHistory(msg){
         resultURL = extensionSearch(msg, searchText);
     }
     
-    var showHTML = "Chrome extension API for ";
+    var showHTML = 'Chrome extension API for ';
     showHTML += document.getElementById('searchText').value;
     showHTML += resultURL;
     document.getElementById('showResult').innerHTML = showHTML;
