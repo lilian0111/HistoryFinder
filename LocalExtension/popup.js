@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             function (historyItems) {
                 console.log(historyItems);
-                console.log(historyItems.length);
+                console.log('his len: ' + historyItems.length);
                 historyCounter = historyItems.length;
                 for(var i = 0; i < historyItems.length; ++i){
                     if(checkUrl(historyItems[i].url) == true)
@@ -87,7 +87,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // for indexing button
     function showIndexButton(){
-        document.getElementById('indexArea').innerHTML = '<input type="button" value="index" id="indexButton"/>';
+        //document.getElementById('indexArea').innerHTML = '<a class="round green" id="indexButton">Index First</a>';
+		document.getElementById('indexArea').innerHTML = '<input type="button" value="index" id="indexButton"/>';
         document.getElementById('indexButton').addEventListener('click', function() {
             document.getElementById('indexArea').innerHTML = '<img src="progress_bar.gif">';
             chrome.storage.local.clear(function(){

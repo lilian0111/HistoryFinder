@@ -30,7 +30,6 @@ function calInverseDocFreq(dfValue, docNum){
 }
 
 function extensionSearch(msg, searchText){
-    //var resultURL = '<ul>';
 	var resultURL = '<table>';
     var historyRank = [];
     var docTermCount = {};
@@ -114,24 +113,30 @@ function extensionSearch(msg, searchText){
     historyRank.sort(function(a, b){
         return (b.rank - a.rank);
     });
-    
 	
-	resultURL += '<tr class="head"><th>rank</th><th>link</th>';
+	resultURL += '<thead><tr><th>rank</th><th>visit date</th><th></th><th>link</th></tr></thead></tbody>';
     // show result
     for(var i = 0; i < historyRank.length; i++){
         if(historyRank[i].rank <= 0)
             break;
-        //resultURL += '<li>';
-        //resultURL += '<a href="' + msg[historyRank[i].id].trueUrl + '" target="_blank">' + msg[historyRank[i].id].trueTitle + '</a>' + ' ' + historyRank[i].rank;
-        //resultURL += '</li>';
+		var time = new Date(msg[historyRank[i].id].lastVisitTime);
 		resultURL += '<tr>';
-		resultURL += '<th>' + historyRank[i].rank.toFixed(4) + '</th>';
-		resultURL += '<td> <a href="' + msg[historyRank[i].id].trueUrl + '" target="_blank">' + msg[historyRank[i].id].trueTitle + '</a></td>';
+		// rank
+		resultURL += '<td>' + historyRank[i].rank.toFixed(4) + '</td>';
+		// date
+		resultURL += '<td>' + time.toLocaleDateString() + '</td>';
+		// delete function
+		resultURL += '<td><img class="delete" src="refresh.png"></td>';
+		
+		// link
+		resultURL += '<td> <a href="' + msg[historyRank[i].id].trueUrl + '" target="_blank">' + msg[historyRank[i].id].trueTitle + '</a>';
+		// url plain text
+		resultURL += '<br>' + msg[historyRank[i].id].trueUrl + '</td>';
+
 		resultURL += '</tr>';
 		
     }
-    //resultURL += '</ul>';
-	resultURL += '</table>';
+	resultURL += '</tbody></table>';
     
     return resultURL;
 }
@@ -148,8 +153,10 @@ function searchHistory(msg){
         resultURL = extensionSearch(msg, searchText);
     }
     
-    var showHTML = 'Chrome extension API for ';
+    //var showHTML = 'Chrome extension API for ';
+	var showHTML = '<h5>Result table for ';
     showHTML += document.getElementById('searchText').value;
+	showHTML += '</h5>';
     showHTML += resultURL;
     document.getElementById('showResult').innerHTML = showHTML;
 }

@@ -5,17 +5,16 @@
  value "popup.html".
  -->
 <html>
-    <head>
-        <title>History Finder Popup</title>
-        <style>
+	<head>
+		<title>History Finder Popup</title>
+        <!--
+		<style>
+			
             body {
                 font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
                 font-size: 100%;
             }
             #status, #ajax {
-                /* avoid an excessively wide status text */
-                white-space: pre;
-                /* max-width: 420px; */
             }
 			table {
 				border-collapse: collapse;
@@ -26,6 +25,7 @@
 			}
 			td{
 				border-left: 1px solid black;
+				max-width: 1000px;
 			}
 			.head th {
 				border-bottom: 1px solid black;
@@ -36,8 +36,115 @@
 			a {
 				text-decoration: none;
 			}
+			
         </style>		
-        <script src="html2text.js"></script>
+		-->
+		
+		<style>
+		* {
+			box-sizing: border-box;
+			font-size: 110%;
+			font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+		  	-moz-box-sizing: border-box;
+			-o-box-sizing: border-box;
+			-webkit-box-sizing: border-box;
+			box-sizing: border-box;
+		}
+		
+		a {
+			text-decoration: none;
+		}
+
+		table {
+			color: #333;
+			font-family: sans-serif;
+			font-size: .9em;
+			text-align: left;
+			line-height: 30px;
+			border-spacing: 0;
+			border: 1px solid #428bca;
+			width: 500px;
+		}
+
+		thead tr:first-child {
+			background: #428bca;
+			color: #fff;
+			border: none;
+		}
+
+		th {font-weight: bold;}
+		th:first-child, td:first-child {padding: 0 15px 0 20px;}
+
+		thead tr:nth-child(3) th {
+			border-bottom: 2px solid #ddd;
+			max-width: 20px;
+		}
+
+		tbody tr:hover {background-color: #f0fbff;}
+		tbody tr:last-child td {border: none;}
+		tbody td {
+			border-bottom: 1px solid #ddd;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			min-width: 100px;
+			max-width: 1200px;
+		}
+		
+		td:nth-child(3) {
+			text-align: right;
+			padding-right: 35px;
+			max-width: 20px;
+		}
+
+		.button {
+			color: #696969;
+			padding-right: 5px;
+			cursor: pointer;
+		}
+
+		.alterar:hover {
+			color: #428bca;
+		}
+
+		.excluir:hover {
+			color: #dc2a2a;
+		}
+		
+		.round {
+		    margin: 0;
+			padding: 0;
+			display: block;
+			
+			width: 100px;
+			height: 100px;
+			padding-top: 30px;		
+			text-decoration: none;		
+			text-align: center;
+			font-size: 22px;		
+			text-shadow: 0 1px 0 rgba(255,255,255,.7);
+			letter-spacing: -.065em;
+			font-family: "Hammersmith One", sans-serif;		
+			-webkit-transition: all .25s ease-in-out;
+			-o-transition: all .25s ease-in-out;
+			-moz-transition: all .25s ease-in-out;
+			transition: all .25s ease-in-out;
+			box-shadow: 2px 2px 7px rgba(0,0,0,.2);
+			border-radius: 300px;
+			z-index: 1;
+			border-width: 4px;
+			border-style: solid;
+		}
+		
+		a.green {
+			background-color: rgba(1,151,171,1);
+			color: rgba(0,63,71,1);
+			border-color: rgba(0,63,71,.2);
+		}
+		a.green:hover {
+			color: rgba(1,151,171,1);
+		}
+		</style>
+		<script src="html2text.js"></script>
         <script src="popup.js"></script>
         <script src="search.js"></script>
         <script src="jquery-1.11.3.min.js"></script>
@@ -45,9 +152,14 @@
 
     </head>
     <body>
-        <div id="status">History Finder - Search what you want in your history</div>
+        <div id="status">
+			<h4>History Finder - Search what you want in your history</h4>
+		</div>
         <div id="indexArea">
-            <input type="button" value="index" id="indexButton"/>
+			<a class="round green" id="indexButton">Index First</a>
+            <!--
+			<input type="button" value="index" id="indexButton"/>
+			-->
         </div>
         <p>
             <input type="text" id="searchText" size="40" placeholder="Search keyword in history record" />
