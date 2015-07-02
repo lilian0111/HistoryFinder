@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     
     progressbar.progressbar({
-      value: false,
+      value: 0,
       change: function() {
         progressLabel.text( progressbar.progressbar( "value" ) + "%" );
       },
