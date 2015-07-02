@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // set counter to check ending time
-    var historyCounter = 0;
-    
+    var historyCounter = 0,totalCounter = 0;
+    var progressbar = $( "#progressbar" ),progressLabel = $( ".progress-label" );
     // check whether to retrieve web pages or not
     function checkUrl(url){
         url = url.substring(url.length - 5).toLowerCase();
@@ -48,7 +48,8 @@ document.addEventListener('DOMContentLoaded', function() {
             function (historyItems) {
                 console.log(historyItems);
                 console.log('his len: ' + historyItems.length);
-                historyCounter = historyItems.length;
+                historyCounter = 0;
+                totalCounter = historyItems.length;
                 for(var i = 0; i < historyItems.length; ++i){
                     if(checkUrl(historyItems[i].url) == true)
                         getUrlContent(historyItems[i]);
@@ -78,19 +79,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // reduce counter value and check
     function checkHistoryCounter() {
-        historyCounter--;
+        historyCounter++;
+        progressbar.progressbar( "value",  Math.floor(historyCounter*100/totalCounter));
         console.log(historyCounter);
-        if (historyCounter == 0) {
+        if (historyCounter == totalCounter) {
             showIndexButton();
         }
     }
 
     // for indexing button
     function showIndexButton(){
+        progressbar.hide();
         //document.getElementById('indexArea').innerHTML = '<a class="round green" id="indexButton">Index First</a>';
 		document.getElementById('indexArea').innerHTML = '<input type="button" value="index" id="indexButton"/>';
         document.getElementById('indexButton').addEventListener('click', function() {
-            document.getElementById('indexArea').innerHTML = '<img src="progress_bar.gif">';
+            document.getElementById('indexArea').innerHTML = '';
+            progressbar.show();
             chrome.storage.local.clear(function(){
                 console.log('clear');
                 getRecentHistory(500);
@@ -118,5 +122,16 @@ document.addEventListener('DOMContentLoaded', function() {
         chrome.storage.local.clear(function(){
             console.log('clear all');
         });
+    });
+
+    
+    progressbar.progressbar({
+      value: false,
+      change: function() {
+        progressLabel.text( progressbar.progressbar( "value" ) + "%" );
+      },
+      complete: function() {
+        progressLabel.text( "Complete!" );
+      }
     });
 });

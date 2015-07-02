@@ -55,7 +55,7 @@
 			text-decoration: none;
 		}
 
-		table {
+		#showResult table {
 			color: #333;
 			font-family: sans-serif;
 			font-size: .9em;
@@ -63,34 +63,35 @@
 			line-height: 30px;
 			border-spacing: 0;
 			border: 1px solid #428bca;
-			width: 500px;
+			width: 100%;
 		}
 
-		thead tr:first-child {
+		#showResult thead tr:first-child {
 			background: #428bca;
 			color: #fff;
 			border: none;
 		}
 
-		th {font-weight: bold;}
-		th:first-child, td:first-child {padding: 0 15px 0 20px;}
+		#showResult th {font-weight: bold;}
+		#showResult th:first-child, td:first-child {padding: 0 15px 0 20px;}
 
-		thead tr:nth-child(3) th {
+		#showResult thead tr:nth-child(3) th {
 			border-bottom: 2px solid #ddd;
 			max-width: 20px;
 		}
 
-		tbody tr:hover {background-color: #f0fbff;}
-		tbody tr:last-child td {border: none;}
-		tbody td {
+		#showResult tbody tr:hover {background-color: #f0fbff;}
+		#showResult tbody tr:last-child td {border: none;}
+		#showResult tbody td {
 			border-bottom: 1px solid #ddd;
 			overflow: hidden;
 			text-overflow: ellipsis;
+			white-space: nowrap;
 			min-width: 100px;
 			max-width: 1200px;
 		}
 		
-		td:nth-child(3) {
+		#showResult td:nth-child(3) {
 			text-align: right;
 			padding-right: 35px;
 			max-width: 20px;
@@ -143,28 +144,67 @@
 		a.green:hover {
 			color: rgba(1,151,171,1);
 		}
+
+		#inputgroup{
+			display: table-cell;
+			padding-top: 20px;
+		}
+		#inputgroup input,#inputgroup img{
+			vertical-align: middle;
+		}
+		#searchText{
+			padding-left: 4px;
+		}
+		#searchImage{
+			height: 40px;
+		}
+		#refreshImage{
+			height: 40px;
+		}
+		#inputgroup img:hover{
+			opacity: 0.5;
+		}
+		#progressbar{
+			width: 600px;
+			display: none;
+		}
+		#progressbar > .ui-progressbar-value{
+			background-color: #ccc;
+			border-color: #ccc;
+		}
+		.progress-label {
+		    float: left;
+		    width: 100%;
+		    text-align: center;
+		    font-weight: bold;
+		    text-shadow: 1px 1px 0 #fff;
+		}
 		</style>
 		<script src="html2text.js"></script>
         <script src="popup.js"></script>
         <script src="search.js"></script>
         <script src="jquery-1.11.3.min.js"></script>
-        
-
+        <script src="jquery-ui.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="jquery-ui.min.css">
     </head>
     <body>
         <div id="status">
 			<h4>History Finder - Search what you want in your history</h4>
 		</div>
+		
+        
+        <div id="progressbar"><div class="progress-label">Loading...</div></div>
         <div id="indexArea">
+
 			<a class="round green" id="indexButton">Index First</a>
             <!--
 			<input type="button" value="index" id="indexButton"/>
 			-->
         </div>
-        <p>
+        <p id="inputgroup">
             <input type="text" id="searchText" size="40" placeholder="Search keyword in history record" />
-            <img id="searchImage" src="icon16.png">
-            <img id="refreshImage" src="refresh.png">
+            <img id="searchImage" src="icon48.png">
+            <img id="refreshImage" src="refresh.jpg">
         </p>
         <div id="showResult"></div>
     </body>
