@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     // set counter to check ending time
-    var historyCounter = 0,totalCounter = 0;
+    var historyCounter = 0, totalCounter = 0;
     var progressbar = $( "#progressbar" ),progressLabel = $( ".progress-label" );
+    
     // check whether to retrieve web pages or not
     function checkUrl(url){
         url = url.substring(url.length - 5).toLowerCase();
@@ -80,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // reduce counter value and check
     function checkHistoryCounter() {
         historyCounter++;
-        progressbar.progressbar( "value",  Math.floor(historyCounter*100/totalCounter));
+        progressbar.progressbar( "value",  Math.floor(historyCounter * 100 / totalCounter));
         console.log(historyCounter);
         if (historyCounter == totalCounter) {
             showIndexButton();
@@ -91,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function showIndexButton(){
         progressbar.hide();
         //document.getElementById('indexArea').innerHTML = '<a class="round green" id="indexButton">Index First</a>';
-		document.getElementById('indexArea').innerHTML = '<input type="button" value="index" id="indexButton"/>';
+        document.getElementById('indexArea').innerHTML = '<input type="button" value="index" id="indexButton"/>';
         document.getElementById('indexButton').addEventListener('click', function() {
             document.getElementById('indexArea').innerHTML = '';
             progressbar.show();
@@ -103,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     showIndexButton();
     
-    // send query kerword and show the result
+    // send query keyword and show the result
     document.getElementById('searchImage').addEventListener('click', function() {
         chrome.storage.local.get(searchHistory);
     });
@@ -124,14 +125,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    
+    // progress bar
     progressbar.progressbar({
-      value: 0,
-      change: function() {
-        progressLabel.text( progressbar.progressbar( "value" ) + "%" );
-      },
-      complete: function() {
-        progressLabel.text( "Complete!" );
-      }
+        value: 0,
+        change: function(){
+            progressLabel.text( progressbar.progressbar( "value" ) + "%" );
+        },
+        complete: function(){
+            progressLabel.text( "Complete!" );
+        }
     });
 });

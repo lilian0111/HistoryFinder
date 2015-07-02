@@ -1,4 +1,4 @@
-// listen to user clicking on extension
+// listen to user clicking on extension button
 chrome.browserAction.onClicked.addListener(function(activeTab){
     var newURL = chrome.extension.getURL('popup.html');
     chrome.tabs.create({ url: newURL });

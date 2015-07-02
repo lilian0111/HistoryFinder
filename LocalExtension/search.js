@@ -30,7 +30,6 @@ function calInverseDocFreq(dfValue, docNum){
 }
 
 function extensionSearch(msg, searchText){
-	var resultURL = '<table>';
     var historyRank = [];
     var docTermCount = {};
     var docNum = 0;
@@ -113,30 +112,31 @@ function extensionSearch(msg, searchText){
     historyRank.sort(function(a, b){
         return (b.rank - a.rank);
     });
-	
-	resultURL += '<thead><tr><th>rank</th><th>visit date</th><th></th><th>link</th></tr></thead></tbody>';
+    
     // show result
+    //var resultURL = '<table><thead><tr><th>rank</th><th>visit date</th><th></th><th>link</th></tr></thead></tbody>';
+    var resultURL = '<table><thead><tr><th>rank</th><th>visit date</th><th>link</th></tr></thead></tbody>';
     for(var i = 0; i < historyRank.length; i++){
         if(historyRank[i].rank <= 0)
             break;
-		var time = new Date(msg[historyRank[i].id].lastVisitTime);
-		resultURL += '<tr>';
-		// rank
-		resultURL += '<td>' + historyRank[i].rank.toFixed(4) + '</td>';
-		// date
-		resultURL += '<td>' + time.toLocaleDateString() + '</td>';
-		// delete function
-		resultURL += '<td><img class="delete" src="refresh.png"></td>';
-		
-		// link
-		resultURL += '<td> <a href="' + msg[historyRank[i].id].trueUrl + '" target="_blank">' + msg[historyRank[i].id].trueTitle + '</a>';
-		// url plain text
-		resultURL += '<br>' + msg[historyRank[i].id].trueUrl + '</td>';
+        
+        var time = new Date(msg[historyRank[i].id].lastVisitTime);
+        resultURL += '<tr>';
+        // rank
+        resultURL += '<td>' + historyRank[i].rank.toFixed(4) + '</td>';
+        // date
+        resultURL += '<td>' + time.toLocaleDateString() + '</td>';
+        // delete function
+        //resultURL += '<td><img class="delete" src="remove.png"></td>';
+        // title and link
+        resultURL += '<td> <a href="' + msg[historyRank[i].id].trueUrl + '" target="_blank">' + msg[historyRank[i].id].trueTitle + '</a>';
+        // url
+        resultURL += '<br>' + msg[historyRank[i].id].trueUrl + '</td>';
 
-		resultURL += '</tr>';
-		
+        resultURL += '</tr>';
+        
     }
-	resultURL += '</tbody></table>';
+    resultURL += '</tbody></table>';
     
     return resultURL;
 }
@@ -153,10 +153,7 @@ function searchHistory(msg){
         resultURL = extensionSearch(msg, searchText);
     }
     
-    //var showHTML = 'Chrome extension API for ';
-	var showHTML = '<h5>Result table for ';
-    showHTML += document.getElementById('searchText').value;
-	showHTML += '</h5>';
+    var showHTML = '<h5>Result table for ' + document.getElementById('searchText').value + '</h5>';
     showHTML += resultURL;
     document.getElementById('showResult').innerHTML = showHTML;
 }
